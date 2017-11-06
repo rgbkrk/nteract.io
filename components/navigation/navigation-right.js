@@ -4,6 +4,9 @@ import Link from "next/link";
 
 export default () => (
   <div className="nav buttons">
+    <Link as="/architecture" href="/architecture" prefetch>
+      <a className="nav-item">Architecture</a>
+    </Link>
     <Link as="/desktop" href="/desktop" prefetch>
       <a className="nav-item">Desktop</a>
     </Link>

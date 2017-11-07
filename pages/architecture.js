@@ -13,8 +13,12 @@ import {
   PageHeaderRight
 } from "../components/page-header/page-header";
 
+type Output = any;
+
 type CellProps = {
-  executionCount: "*" | number | null
+  executionCount: "*" | number | null,
+  source: string,
+  outputs: Array<Output>
 };
 
 const Cell = () => {
@@ -114,8 +118,6 @@ Namespaces are one honking great idea -- let's do more of those!
           text-align: center;
           flex: 0 0 auto;
 
-          letter-spacing: 0.3px;
-          word-spacing: 1px;
           font-size: 14px;
           line-height: 20px;
 

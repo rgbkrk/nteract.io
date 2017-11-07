@@ -16,44 +16,42 @@ import {
 type Output = any;
 
 type CellProps = {
-  executionCount: "*" | number | null,
+  executionCount?: "*" | number | null,
   source: string,
   outputs: Array<Output>
 };
 
-const Cell = () => {
+const Cell = (
+  { executionCount, source, outputs }: CellProps = {
+    executionCount: null,
+    source: "",
+    outputs: []
+  }
+) => {
   return (
     <div className="cell">
       <div className="input-container">
-        <div className="prompt">[ ]</div>
-        <pre className="input">import this</pre>
+        <div className="prompt">[{executionCount ? executionCount : " "}]</div>
+        <pre className="input">{source}</pre>
       </div>
       <div>
         <div className="outputs">
-          <pre>{`The Zen of Python, by Tim Peters
-
-Beautiful is better than ugly.
-Explicit is better than implicit.
-Simple is better than complex.
-Complex is better than complicated.
-Flat is better than nested.
-Sparse is better than dense.
-Readability counts.
-Special cases aren't special enough to break the rules.
-Although practicality beats purity.
-Errors should never pass silently.
-Unless explicitly silenced.
-In the face of ambiguity, refuse the temptation to guess.
-There should be one-- and preferably only one --obvious way to do it.
-Although that way may not be obvious at first unless you're Dutch.
-Now is better than never.
-Although never is often better than *right* now.
-If the implementation is hard to explain, it's a bad idea.
-If the implementation is easy to explain, it may be a good idea.
-Namespaces are one honking great idea -- let's do more of those!
-          `}</pre>
+          {outputs.map(output => {
+            switch (output.mimetype) {
+              case "text/plain":
+                return <pre>{output.data}</pre>;
+              case "text/html":
+                return <pre>html here</pre>;
+              case "application/vdom.v1+json":
+                const { tagName, attributes, children } = output.data;
+                return React.createElement(tagName, attributes, children);
+              default:
+                return null;
+            }
+          })}
         </div>
       </div>
+      <style jsx global>{``}</style>
       <style jsx>{`
         pre {
           /* There are currently global styles that are overwriting <pre> to
@@ -137,7 +135,49 @@ const SectionOne = () => (
         nteract is built on top of a suite of protocols and file formats from
         the jupyter project.
       </p>
-      <Cell />
+      <Cell
+        source="import this"
+        outputs={[
+          {
+            mimetype: "text/plain",
+            data: `The Zen of Python, by Tim Peters
+
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!`
+          }
+        ]}
+      />
+      <hr />
+      <Cell
+        source={`from vdom import h1\nh1("it works!")`}
+        outputs={[
+          {
+            mimetype: "application/vdom.v1+json",
+            data: {
+              tagName: "h1",
+              children: "it works!",
+              attributes: {}
+            }
+          }
+        ]}
+      />
     </ContentSectionPane>
   </ContentSection>
 );
